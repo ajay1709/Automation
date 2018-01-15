@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="TestNG Ant Task" verbose="1" >
+    <test name="Regression Testing of TSN  Websites" preserve-order="true">
+    
+       <classes>
+            <class name="com.Webpower.Webpower.XSLT"/>
+                  
+                  <methods>
+       				<include name= "Request_A_QUOTE__Size_FLOW" />
+       				<include name= "Request_A_QUOTE__Vechicle_FLOW " />           			
+       			 </methods>
+
+        </classes>
+    </test>
+</suite>

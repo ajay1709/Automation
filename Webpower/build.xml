@@ -1,0 +1,109 @@
+<project name="Webpower TSN" default="report" basedir=".">
+	<!-- ========== Initialize Properties =================================== -->
+	<!-- set global properties for build -->
+	<property name="basedir" value="." />
+	<property name="lib" value="${basedir}/lib" />
+	<property name="src" value="${basedir}/src" />
+	<property name="bin" value="${basedir}/bin" />
+	<property name="report-dir" value="${basedir}/test-output" />
+	
+	
+	<!-- ====== Set the classpath ====  -->
+	
+	<path id="classpath">
+		<pathelement location="${bin}"/>
+        <pathelement location= "${basedir}\\lib\junit-3.8.1.jar"/>
+        <pathelement location= "${basedir}\\lib\selenium-java-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-api-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-chrome-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-edge-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-firefox-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-ie-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-opera-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-remote-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-safari-driver-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\selenium-support-3.8.1.jar"/>
+		<pathelement location= "${basedir}\\lib\byte-buddy-1.7.5.jar"/>
+		<pathelement location= "${basedir}\\lib\commons-exec-1.3.jar"/>
+		<pathelement location= "${basedir}\\lib\commons-codec-1.10.jar"/>
+		<pathelement location= "${basedir}\\lib\commons-logging-1.2.jar"/>
+		<pathelement location= "${basedir}\\lib\gson-2.8.2.jar"/>
+		<pathelement location= "${basedir}\\lib\guava-23.0.jar"/>
+		<pathelement location= "${basedir}\\lib\jsr305-1.3.9.jar"/>
+		<pathelement location= "${basedir}\\lib\error_prone_annotations-2.0.18.jar"/>
+		<pathelement location= "${basedir}\\lib\j2objc-annotations-1.1.jar"/>
+		<pathelement location= "${basedir}\\lib\animal-sniffer-annotations-1.14.jar"/>
+		<pathelement location= "${basedir}\\lib\httpclient-4.5.3.jar"/>
+		<pathelement location= "${basedir}\\lib\httpcore-4.4.6.jar"/>
+		<pathelement location= "${basedir}\\lib\testng-6.13.1.jar"/>
+		<pathelement location= "${basedir}\\lib\jcommander-1.72.jar"/>
+		<pathelement location= "${basedir}\\lib\log4j-1.2.17.jar"/>
+		<pathelement location= "${basedir}\\lib\ant-1.10.1.jar"/>
+		<pathelement location= "${basedir}\\lib\ant-launcher-1.10.1.jar"/>
+		<pathelement location= "${basedir}\\lib\extentreports-2.41.2.jar"/>		
+		<pathelement location= "${basedir}\\lib\saxon-9.1.0.8.jar"/>			
+		
+	</path>
+	
+	
+ <!-- Delete directories  -->
+	<target name="clean" depends = "copy" >
+	<echo> /* Deleting bin , report-dir and testng-report-dir */ </echo>
+		<delete dir="${bin}" />
+		<delete dir="${report-dir}" />
+		
+	</target>
+	
+   	
+	<!-- Creating directories -->
+	<target name="create"  depends = "clean">
+	<echo> /* Creating  bin , report-dir and testng-report-dir */ </echo>
+		<mkdir dir="${bin}" />
+		<mkdir dir="${report-dir}" />
+		
+	</target>
+	
+	  <!-- Copying jars from Maven to lib -->
+    <target name="copy" >
+	<echo> /* Copy from Maven to lib */ </echo> 	
+        <copy todir="${lib}" flatten="true">        
+         <fileset dir = "C:\Users\Ajay.Upadhyay.ARI\.m2\repository">
+           <include name="**/*.jar"/>    
+          </fileset>        
+        </copy>
+	</target>
+	
+	<!-- Compile the java code from ${src} into ${bin} -->
+	<target name="compile" depends = "create" >
+	<echo> /* Inside Compile target */ </echo>
+		<javac srcdir="${src}" classpathref="classpath" includeAntRuntime="No" destdir="${bin}" />
+		<echo> /* Compiled Directory Classes */ </echo>
+	</target>
+	
+	<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="classpath" />
+	<!-- Runs the file and generate report -->
+    <target name="run" description="Running tests"  depends = "compile" >
+        <echo>Running Tests...</echo>
+                <testng outputdir="${report-dir}" classpathref="classpath" useDefaultListeners="true" workingdir="${basedir}">
+           <xmlfileset dir="${basedir}" includes="testng.xml"/>
+        </testng>
+        
+    </target>	    
+      
+         <target name="report"  depends = "run" >
+        <delete dir="${basedir}/testng-xslt">
+        </delete>
+        <mkdir dir="${basedir}/testng-xslt">
+        </mkdir>
+        <xslt in="${basedir}/test-output/testng-results.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html">
+            <param expression="${basedir}/testng-xslt/" name="testNgXslt.outputDir" />
+            <param expression="true" name="testNgXslt.sortTestCaseLinks" />
+            <param expression="FAIL,SKIP,PASS,CONF,BY_CLASS" name="testNgXslt.testDetailsFilter" />
+            <param expression="true" name="testNgXslt.showRuntimeTotals" />
+            <classpath refid="classpath">
+            </classpath>
+        </xslt>
+    </target>
+	
+	
+	</project>
