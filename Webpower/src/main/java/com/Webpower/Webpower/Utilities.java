@@ -209,8 +209,17 @@ public class Utilities {
         wait.until(pageLoadCondition);
     } 
 	
+	public void doit()
+	{
+		System.out.println("Ajay");
+	}
+	
+	
 	//End
+	
+	
 }
 	
+
 
 
